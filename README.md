@@ -38,7 +38,7 @@ The API is built with **JAX-RS (Jersey 2.x)** hosted on a **Grizzly2 embedded HT
 
 ### Build
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/Ankitpaudel/Smart-campus.git>
 cd smart-campus-api
 mvn clean package
 ```
