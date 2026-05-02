@@ -1,20 +1,35 @@
 package com.smartcampus;
 
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+
+import com.smartcampus.exception.ExceptionMappers;
+import com.smartcampus.filter.ApiLoggingFilter;
+import com.smartcampus.resource.DiscoveryResource;
+import com.smartcampus.resource.RoomResource;
+import com.smartcampus.resource.SensorResource;
+
 public class Main {
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-    public static final String BASE_URI = "http://0.0.0.0:8080/";
+    public static final String BASE_URI = "http://0.0.0.0:8080/api/v1/";
 
     public static HttpServer startServer() {
-        final ResourceConfig rc = new ResourceConfig().packages("com.smartcampus");
+        final ResourceConfig rc = new ResourceConfig()
+                .register(DiscoveryResource.class)
+                .register(RoomResource.class)
+                .register(SensorResource.class)
+                .register(ApiLoggingFilter.class)
+                .register(ExceptionMappers.RoomNotEmptyExceptionMapper.class)
+                .register(ExceptionMappers.LinkedResourceNotFoundExceptionMapper.class)
+                .register(ExceptionMappers.SensorUnavailableExceptionMapper.class)
+                .register(ExceptionMappers.NotFoundExceptionMapper.class)
+                .register(ExceptionMappers.GlobalExceptionMapper.class);
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
